@@ -43,9 +43,33 @@ async function run() {
             res.send(result)
         })
 
+        app.get('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await usersCollection.findOne(query);
+            res.send(result)
+        })
+
         app.post('/users', async (req, res) => {
             const users = req.body;
             const result = await usersCollection.insertOne(users);
+            res.send(result)
+        })
+
+        app.put('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const user = req.body;
+            console.log(id, user)
+            const filter = { _id: new ObjectId(id) }
+            const options = { upsert: true }
+            const updatedUsers = {
+                $set: {
+                    name: user.name,
+                    email: user.email
+                }
+
+            }
+            const result = await usersCollection.updateOne(filter, updatedUsers, options);
             res.send(result)
         })
 
