@@ -31,6 +31,11 @@ async function run() {
 
         const usersCollection = client.db("simpleCrudDB").collection("usersCollection");
 
+        app.get("/users", async (req, res) => {
+            const users = usersCollection.find();
+            const result = await users.toArray();
+            res.send(result)
+        })
 
         app.post("/users", async (req, res) => {
             const newUser = req.body;
