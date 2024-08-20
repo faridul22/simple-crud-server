@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { MongoClient, ServerApiVersion } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -8,11 +8,12 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-//--------------------------------mongoDB---------------------------
-
+//---------------MongoDB----------
 // simpleCRUDServer
 // UJWpKAgOJDDqiKxS
 
+
+// const uri = "mongodb+srv://simpleCRUDServer:UJWpKAgOJDDqiKxS@cluster0.xwjksg9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 const uri = "mongodb+srv://simpleCRUDServer:UJWpKAgOJDDqiKxS@cluster0.xwjksg9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
@@ -30,74 +31,20 @@ async function run() {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
 
-        //------------Multiline collection----------------
-        // const database = client.db("usersDB");
-        // const usersCollection = database.collection("users");
-
-        // -------------Singleline collection---------------
-        const usersCollection = client.db("usersDB").collection("users")
-
-        app.get('/users', async (req, res) => {
-            const cursor = usersCollection.find();
-            const result = await cursor.toArray();
-            res.send(result)
-        })
-
-        app.get('/users/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: new ObjectId(id) }
-            const result = await usersCollection.findOne(query);
-            res.send(result)
-        })
-
-        app.post('/users', async (req, res) => {
-            const users = req.body;
-            const result = await usersCollection.insertOne(users);
-            res.send(result)
-        })
-
-        app.put('/users/:id', async (req, res) => {
-            const id = req.params.id;
-            const user = req.body;
-            console.log(id, user)
-            const filter = { _id: new ObjectId(id) }
-            const options = { upsert: true }
-            const updatedUsers = {
-                $set: {
-                    name: user.name,
-                    email: user.email
-                }
-
-            }
-            const result = await usersCollection.updateOne(filter, updatedUsers, options);
-            res.send(result)
-        })
-
-        app.delete('/users/:id', async (req, res) => {
-            const id = req.params.id;
-            console.log(`please delete id ${id} user`)
-            const query = { _id: new ObjectId(id) }
-            const result = await usersCollection.deleteOne(query);
-            res.send(result)
-        })
-
-        // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
-        // Ensures that the client will close when you finish/error
-        // await client.close();
+
     }
 }
 run().catch(console.dir);
 
-
-//---------------------------------End----------------------------
+//---------------End--------------
 
 app.get('/', (req, res) => {
-    res.send('SIMPLE CRUD SERVER IS RUNNING');
-})
+    res.send("Simple CRUD is Running")
+});
 
 app.listen(port, () => {
-    console.log(`SIMPLE CRUD SERVER IS RUNNING ON PORT:${port}`)
+    console.log(`Simple CRUD is Running on port: ${port}`)
 })
