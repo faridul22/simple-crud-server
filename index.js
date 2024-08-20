@@ -28,11 +28,19 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
-        // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+
+        const usersCollection = client.db("simpleCrudDB").collection("usersCollection");
+
+
+        app.post("/users", async (req, res) => {
+            const newUser = req.body;
+            console.log(newUser);
+            const result = await usersCollection.insertOne(newUser);
+            res.send(result)
+        })
 
         await client.db("admin").command({ ping: 1 });
-        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+        console.log("You successfully connected to MongoDB!");
     } finally {
 
     }
